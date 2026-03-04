@@ -31,13 +31,23 @@
 ```text
 go-tutorial/
 ├── README.md              # 本文件：总览与学习指南
-├── phase1/
-│   ├── README.md          # Phase 1 详细说明
-│   ├── 01_basics.go       # 基础语法
-│   ├── 02_functions.go    # 函数、多返回值、defer、panic/recover
-│   ├── 03_collections.go  # 数组、切片、map、结构体
-│   ├── 04_pointers.go     # 指针基础
-│   └── 05_http_server.go  # 标准库 net/http 服务
+├── phase1/                # 快速上手（已重构，深度版）
+│   ├── README.md          # Phase 1 完整教程文档
+│   ├── 00_hello.go        # 包、导入、可见性
+│   ├── 01_variables_types_constants.go  # 变量、常量、类型、零值
+│   ├── 02_control_flow.go # if/for/switch/range
+│   ├── 03_functions.go    # 函数、多返回值、闭包
+│   ├── 04_defer_panic_recover.go        # defer、panic、recover
+│   ├── 05_arrays_and_slices.go          # 数组与切片深度
+│   ├── 06_maps.go         # map 深度
+│   ├── 07_structs_methods.go            # 结构体、方法、tag、JSON
+│   ├── 08_pointers.go     # 指针深度
+│   ├── 09_http_server.go  # 标准库 net/http 服务
+│   └── homework/          # 实战作业完整参考答案
+│       ├── README.md
+│       ├── main.go
+│       ├── student.go
+│       └── student_test.go
 ├── phase2/                # 接口、goroutine、channel、context、sync
 ├── phase3/                # RESTful API、Gin、数据库、测试、pprof
 ├── phase4/                # 内存模型、GMP 调度、网络编程、设计模式
@@ -64,9 +74,16 @@ go version
 
 ```bash
 cd phase1
-go run 01_basics.go
-go run 02_functions.go
-# ... 其他示例
+go run 00_hello.go
+go run 01_variables_types_constants.go
+go run 02_control_flow.go
+go run 03_functions.go
+go run 04_defer_panic_recover.go
+go run 05_arrays_and_slices.go
+go run 06_maps.go
+go run 07_structs_methods.go
+go run 08_pointers.go
+go run 09_http_server.go
 ```
 
 ## 与 Java/Spring Boot 的核心差异速查
