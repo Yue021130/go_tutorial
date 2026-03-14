@@ -15,7 +15,7 @@
 | 阶段 | 天数 | 主题 | 目录 |
 |------|------|------|------|
 | Phase 1 | 第 1-3 天 | 快速上手 | [`phase1/`](phase1/) |
-| Phase 2 | 第 4-7 天 | 核心进阶 | `phase2/`（待更新） |
+| Phase 2 | 第 4-7 天 | 核心进阶 | [`phase2/`](phase2/)（项目与代码已补全） |
 | Phase 3 | 第 8-14 天 | 工程实战 | `phase3/`（待更新） |
 | Phase 4 | 第 15-21 天 | 高级与源码 | `phase4/`（待更新） |
 | Phase 5 | 第 22-30 天 | 云原生与部署 | `phase5/`（待更新） |
@@ -31,6 +31,11 @@
 ```text
 go-tutorial/
 ├── README.md              # 本文件：总览与学习指南
+├── docs/                  # 新手文档中心（先看这里）
+│   ├── README.md
+│   ├── getting-started.md
+│   ├── how-to-read-code.md
+│   └── phase2-playbook.md
 ├── phase1/                # 快速上手（已重构，深度版）
 │   ├── README.md          # Phase 1 完整教程文档
 │   ├── 00_hello.go        # 包、导入、可见性
@@ -48,7 +53,11 @@ go-tutorial/
 │       ├── main.go
 │       ├── student.go
 │       └── student_test.go
-├── phase2/                # 接口、goroutine、channel、context、sync
+├── phase2/                # 核心进阶（多包工程 + 章节入口 + 测试）
+│   ├── README.md          # Phase 2 学习指南
+│   ├── go.mod
+│   ├── cmd/               # 10-17 章节可运行入口
+│   └── internal/          # 共享内部包与测试
 ├── phase3/                # RESTful API、Gin、数据库、测试、pprof
 ├── phase4/                # 内存模型、GMP 调度、网络编程、设计模式
 └── phase5/                # Docker、K8s、可观测性、CI/CD
@@ -86,6 +95,13 @@ go run 08_pointers.go
 go run 09_http_server.go
 ```
 
+### 4. 新手先看文档（强烈建议）
+
+- [Docs 文档中心](docs/)
+- [新手起步指南](docs/getting-started.md)
+- [代码阅读指南](docs/how-to-read-code.md)
+- [Phase 2 学习手册](docs/phase2-playbook.md)
+
 ## 与 Java/Spring Boot 的核心差异速查
 
 | 对比项 | Java/Spring Boot | Go |
@@ -119,12 +135,40 @@ go run 09_http_server.go
 
 ### Phase 2：核心进阶（第 4-7 天）
 
-- 接口与类型系统：隐式实现、空接口、类型断言、类型切换
-- 方法集与接收者：值接收者 vs 指针接收者
-- goroutine 与 channel：并发模型
-- select、context、sync 包
-- 错误处理最佳实践
-- 反射与 unsafe（了解即可）
+#### 学习目标
+
+- 理解 Go 接口系统与 Java 接口体系的设计差异，掌握隐式实现的工程价值。
+- 掌握 goroutine、channel、select 的并发协作模型，能写出可终止、可控的并发代码。
+- 学会使用 `context`、`sync`、`atomic` 构建可靠并发组件，避免竞态和 goroutine 泄漏。
+- 建立面向工程的错误处理规范（错误包装、分类、传播、日志边界）。
+- 对反射与 `unsafe` 建立边界认知：知道何时用、何时不用。
+
+#### 建议学习节奏（4 天）
+
+- **Day 4**：接口与类型系统、方法集与接收者
+- **Day 5**：goroutine、channel、select、并发模式（pipeline/worker pool）
+- **Day 6**：`context` 取消传播、`sync` 原语、`atomic` 与并发安全 map 方案
+- **Day 7**：错误处理最佳实践、反射基础与 `unsafe` 风险认知
+
+#### 核心知识点清单
+
+- 接口：隐式实现、空接口 `any`、类型断言、类型切换、接口组合
+- 接收者：值接收者/指针接收者与方法集关系，避免“看似实现却未实现”问题
+- 并发：channel 缓冲与阻塞语义、关闭约定、select 超时/退出分支
+- 取消：`context.WithCancel/WithTimeout` 的生命周期管理
+- 同步：`sync.Mutex/RWMutex/WaitGroup/Once/Cond/Pool` 的适用边界
+- 错误：`errors.Is/As/Join`、`fmt.Errorf("...: %w", err)`、哨兵错误与错误类型
+- 反射：动态调用与 tag 读取的成本认知；`unsafe` 仅作机制理解
+
+#### 常见坑（需重点规避）
+
+- 在循环中错误捕获迭代变量导致并发逻辑错乱
+- channel 发送/接收方向不匹配，或提前关闭导致 panic
+- 只启动 goroutine 不管理退出条件，造成泄漏
+- 在共享 map 上并发读写触发数据竞争
+- 错误只打印不返回，导致调用链失真
+
+👉 [进入 Phase 2 学习](phase2/)
 
 ### Phase 3：工程实战（第 8-14 天）
 
@@ -180,5 +224,5 @@ go run 09_http_server.go
 
 ---
 
-**当前进度**：Phase 1 已完成 ✅  
-**下一步**：[开始学习 Phase 1](phase1/)
+**当前进度**：Phase 1 已完成 ✅，Phase 2 项目与代码已补全 ✅  
+**下一步**：[开始学习 Phase 2](phase2/)
