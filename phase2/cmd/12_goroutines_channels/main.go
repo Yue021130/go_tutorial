@@ -15,17 +15,31 @@ func drain(ch <-chan int) []int {
 }
 
 func main() {
-	// pipeline: generate -> square
+	fmt.Println("===== unbuffered channel =====")
+	concurrency.DemonstrateUnbuffered()
+
+	fmt.Println("\n===== buffered channel =====")
+	concurrency.DemonstrateBuffered()
+
+	fmt.Println("\n===== channel close + range =====")
+	for n := range concurrency.GenerateWithClose(3) {
+		fmt.Println("received:", n)
+	}
+
+	fmt.Println("\n===== sync.WaitGroup =====")
+	concurrency.WaitGroupExample()
+
+	fmt.Println("\n===== pipeline: generate -> square =====")
 	pipelineOut := drain(concurrency.Square(concurrency.Generate(1, 2, 3, 4)))
 	fmt.Println("pipeline squares:", pipelineOut)
 
-	// fan-in: 合并两个流
+	fmt.Println("\n===== fan-in: 合并两个流 =====")
 	a := concurrency.Square(concurrency.Generate(1, 3, 5))
 	b := concurrency.Square(concurrency.Generate(2, 4, 6))
 	merged := drain(concurrency.FanIn(a, b))
 	fmt.Println("fan-in merged squares:", merged)
 
-	// worker pool
+	fmt.Println("\n===== worker pool =====")
 	poolOut := concurrency.WorkerPoolSquare([]int{1, 2, 3, 4, 5, 6}, 3)
 	fmt.Println("worker pool squares(sorted):", poolOut)
 }
