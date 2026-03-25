@@ -37,3 +37,33 @@ func TestAnyToInt(t *testing.T) {
 		t.Fatalf("expected false for non-numeric string")
 	}
 }
+
+func TestNilInterface(t *testing.T) {
+	var r Repository
+	if r != nil {
+		t.Fatal("nil interface should be nil")
+	}
+
+	var ur *UserRepository
+	r = ur
+	if r == nil {
+		t.Fatal("typed nil assigned to interface should not be nil")
+	}
+
+	_, err := r.Find(1)
+	if err == nil {
+		t.Fatal("expected error for typed nil")
+	}
+}
+
+func TestStringReader(t *testing.T) {
+	r := NewStringReader("hello")
+	buf := make([]byte, 3)
+	n, err := r.Read(buf)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if n != 3 || string(buf[:n]) != "hel" {
+		t.Fatalf("expected 'hel', got %q", string(buf[:n]))
+	}
+}
