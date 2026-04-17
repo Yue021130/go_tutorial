@@ -16,8 +16,8 @@
 |------|------|------|------|
 | Phase 1 | 第 1-3 天 | 快速上手 | [`phase1/`](phase1/) |
 | Phase 2 | 第 4-7 天 | 核心进阶 | [`phase2/`](phase2/)（项目与代码已补全） |
-| Phase 3 | 第 8-14 天 | 工程实战 | `phase3/`（待更新） |
-| Phase 4 | 第 15-21 天 | 高级与源码 | `phase4/`（待更新） |
+| Phase 3 | 第 8-14 天 | 工程实战 | [`phase3/`](phase3/)（已补全） |
+| Phase 4 | 第 15-21 天 | 高级与源码 | [`phase4/`](phase4/)（已补全） |
 | Phase 5 | 第 22-30 天 | 云原生与部署 | `phase5/`（待更新） |
 
 ## 环境要求
@@ -53,13 +53,37 @@ go-tutorial/
 │       ├── main.go
 │       ├── student.go
 │       └── student_test.go
-├── phase2/                # 核心进阶（多包工程 + 章节入口 + 测试）
-│   ├── README.md          # Phase 2 学习指南
+├── phase2/                # 核心进阶（已补充深化）
+│   ├── README.md          # Phase 2 完整教程
 │   ├── go.mod
 │   ├── cmd/               # 10-17 章节可运行入口
-│   └── internal/          # 共享内部包与测试
-├── phase3/                # RESTful API、Gin、数据库、测试、pprof
-├── phase4/                # 内存模型、GMP 调度、网络编程、设计模式
+│   ├── internal/          # 共享内部包与测试
+│   └── homework/          # 并发任务调度器作业
+├── phase3/                # 工程实战（已补全）
+│   ├── README.md          # Phase 3 完整教程
+│   ├── go.mod
+│   ├── cmd/server/        # 程序入口
+│   ├── internal/          # 分层架构实现
+│   │   ├── config/        # Viper 配置
+│   │   ├── domain/        # 领域模型
+│   │   ├── handler/       # HTTP handler
+│   │   ├── logger/        # zap 日志
+│   │   ├── middleware/    # JWT、日志、恢复、限流
+│   │   ├── repository/    # 数据访问层
+│   │   ├── router/        # 路由
+│   │   └── service/       # 业务逻辑层
+│   ├── configs/           # 配置文件
+│   ├── tests/             # 集成测试
+│   ├── homework/          # 订单管理模块作业
+│   └── docs/              # 项目布局说明
+├── phase4/                # 高级与源码（已补全）
+│   ├── README.md          # Phase 4 完整教程
+│   ├── go.mod
+│   ├── cmd/               # 20-31 章节可运行入口
+│   ├── internal/          # GC/GMP/escape 共享包
+│   ├── api/               # gRPC proto 示例
+│   ├── docs/              # gin/etcd/prometheus 源码阅读指南
+│   └── homework/          # 并发日志处理器作业
 └── phase5/                # Docker、K8s、可观测性、CI/CD
 ```
 
@@ -172,25 +196,88 @@ go run 09_http_server.go
 
 ### Phase 3：工程实战（第 8-14 天）
 
-- Go Modules 依赖管理进阶
-- Standard Go Project Layout 项目目录结构
-- 完整 RESTful API 服务（推荐 Gin）
-- 分层架构：handler → service → repository
-- 数据库操作：GORM / sqlx
-- 配置管理：Viper
-- 日志：zap / logrus
-- 中间件：JWT 认证、请求日志、错误恢复、限流
-- 单元测试、基准测试与覆盖率
-- 性能分析：pprof
+#### 学习目标
+
+- 掌握 Go Modules 依赖管理与语义化版本，能配置私有仓库。
+- 理解 Standard Go Project Layout，能搭建清晰的项目目录结构。
+- 使用 Gin 框架实现完整的 RESTful API 服务。
+- 掌握分层架构 `handler → service → repository`，并与 Java 的 `Controller-Service-DAO` 对比。
+- 使用 GORM 完成数据库 CRUD，理解其与 MyBatis/JPA 的差异。
+- 使用 Viper 管理配置、zap 记录结构化日志。
+- 实现 JWT 认证、请求日志、错误恢复、令牌桶限流等中间件。
+- 编写单元测试、集成测试、基准测试，能看测试覆盖率。
+- 使用 pprof 进行 CPU / 内存性能分析。
+
+#### 建议学习节奏（7 天）
+
+- **Day 8**：Go Modules + 项目布局 + 项目初始化
+- **Day 9**：domain + repository + service 分层实现
+- **Day 10**：Gin handler + router + 基础中间件
+- **Day 11**：JWT 认证 + 限流 + 错误恢复中间件
+- **Day 12**：Viper 配置 + zap 日志集成
+- **Day 13**：单元测试 + 集成测试 + 基准测试 + 覆盖率
+- **Day 14**：pprof 性能分析 + 订单管理模块作业
+
+#### 核心知识点清单
+
+- Go Modules：`go.mod`、`go.sum`、语义化版本、`GOPRIVATE` 私有仓库配置
+- 项目布局：`cmd/`、`internal/`、`pkg/`、`configs/`、`tests/` 的职责
+- 分层架构：domain → repository → service → handler 的数据流向
+- Gin：路由、参数绑定、校验、中间件链
+- GORM：模型定义、迁移、CRUD、事务、预加载
+- zap：结构化日志、日志级别、输出到文件
+- 测试：`testing`、testify、mock、httptest、基准测试、覆盖率
+- pprof：`net/http/pprof`、CPU / heap 分析
+
+#### 常见坑（需重点规避）
+
+- `internal` 包被外部导入导致编译失败
+- GORM 自动迁移只适用于开发环境，生产环境应使用版本化迁移
+- zap 日志对象未正确同步导致日志丢失
+- JWT secret 硬编码在代码中或提交到仓库
+- 限流器做成全局单例，未考虑多实例部署场景
+- 测试依赖真实数据库，导致测试不稳定、运行慢
+
+👉 [进入 Phase 3 学习](phase3/)
 
 ### Phase 4：高级与源码（第 15-21 天）
 
-- Go 内存模型与 GC 原理
-- GMP 调度器模型
-- 内存逃逸分析、栈扩容、sync.Pool 原理
-- 网络编程：TCP/UDP、HTTP/2、gRPC
-- 常用设计模式：Option 模式、Pipeline、Worker Pool
-- 开源项目源码阅读（gin / etcd / prometheus 部分源码）
+#### 学习目标
+
+- 理解 Go 内存模型与 GC 原理，能与 JVM 内存模型对比说明差异。
+- 理解 GMP 调度器模型，能说清 goroutine、M、P 的协作关系。
+- 理解内存逃逸分析、栈扩容、sync.Pool 的适用场景。
+- 能使用 Go 标准库实现 TCP/UDP/HTTP2 服务，能跑通 gRPC 示例。
+- 能在项目中灵活运用 Option 模式、Functional Options、Pipeline、Worker Pool。
+- 能阅读中等规模开源项目（gin/etcd/prometheus）的核心源码，提炼可复用的设计。
+
+#### 建议学习节奏（7 天）
+
+- **Day 15**：Go 内存模型与 GC 原理
+- **Day 16**：GMP 调度器模型
+- **Day 17**：内存逃逸分析、栈扩容、sync.Pool
+- **Day 18-19**：网络编程（TCP/UDP/HTTP2/gRPC）
+- **Day 20**：Go 中的常用设计模式
+- **Day 21**：开源项目源码阅读
+
+#### 核心知识点清单
+
+- 内存模型：栈 vs 堆、逃逸分析、runtime.MemStats
+- GC：三色标记清除、写屏障、GOGC、STW
+- GMP：Goroutine、Machine、Processor、work stealing、GOMAXPROCS
+- 网络：netpoller、TCP/UDP 并发模型、HTTP/2、h2c、gRPC + Protobuf
+- 设计模式：Option 模式、Functional Options、Pipeline、Worker Pool
+- 源码阅读：Gin 中间件链与路由树、etcd Raft 与 mvcc、Prometheus Metric/Registry
+
+#### 常见坑（需重点规避）
+
+- 把 `sync.Pool` 当缓存，存放需要长期保留的对象。
+- 大量 goroutine 泄漏：只启动不管理退出条件。
+- 在 CPU 密集型任务中创建远超 GOMAXPROCS 的 goroutine，导致无效切换。
+- 写 gRPC 服务时不设置超时/取消，导致调用 hanging。
+- 阅读源码时一开始就陷入细节，没有先建立整体数据流。
+
+👉 [进入 Phase 4 学习](phase4/)
 
 ### Phase 5：云原生与部署（第 22-30 天）
 
@@ -224,5 +311,5 @@ go run 09_http_server.go
 
 ---
 
-**当前进度**：Phase 1 已完成 ✅，Phase 2 项目与代码已补全 ✅  
-**下一步**：[开始学习 Phase 2](phase2/)
+**当前进度**：Phase 1 已完成 ✅，Phase 2 项目与代码已补全 ✅，Phase 3 项目与文档已补全 ✅，Phase 4 项目与文档已补全 ✅  
+**下一步**：[开始学习 Phase 4](phase4/)
